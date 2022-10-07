@@ -1,0 +1,14 @@
+package io.github.studiousgarbanzo.sudeepscarts.object;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.immutables.value.Value;
+
+@Value.Immutable
+@JsonSerialize(as = ImmutableMinPriceDetails.class)
+@JsonDeserialize(as = ImmutableMinPriceDetails.class)
+public interface MinPriceDetails {
+	int amount();
+
+	String currency();
+}
