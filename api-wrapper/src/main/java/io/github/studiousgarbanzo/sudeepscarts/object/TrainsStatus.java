@@ -1,5 +1,6 @@
 package io.github.studiousgarbanzo.sudeepscarts.object;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -9,6 +10,7 @@ import org.immutables.value.Value;
 @Value.Immutable
 @JsonSerialize(as = ImmutableTrainsStatus.class)
 @JsonDeserialize(as = ImmutableTrainsStatus.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface TrainsStatus {
 	MinPriceDetails minPriceDetails();
 
