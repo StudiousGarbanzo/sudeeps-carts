@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import reactor.core.publisher.Mono;
@@ -21,7 +23,28 @@ public class HttpSender {
 			.build();
 	public static final ObjectMapper MAPPER = new ObjectMapper().registerModule(new Jdk8Module()).configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
 
+	public static Mono<JsonNode> performJsonRequestJson(Route route, Object payloadObj, Map<String, String> parameters) {
+		return performJsonRequest(route, payloadObj, parameters).map(body -> {
+			try {
+				return MAPPER.readTree(body);
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException(e);
+			}
+		});
+	}
+
 	public static <T> Mono<T> performJsonRequest(Route route, Object payloadObj, Map<String, String> parameters, Class<T> mappingClass) {
+		return performJsonRequest(route, payloadObj, parameters)
+				.map(body -> {
+					try {
+						return MAPPER.readValue(body, mappingClass);
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				});
+	}
+
+	public static Mono<String> performJsonRequest(Route route, Object payloadObj, Map<String, String> parameters) {
 		String payload;
 
 		if (payloadObj instanceof String) {
@@ -49,14 +72,7 @@ public class HttpSender {
 		}
 
 		return Mono.fromFuture(CLIENT.sendAsync(requestBuilder.build(), HttpResponse.BodyHandlers.ofString()))
-				.map(HttpResponse::body)
-				.map(s -> {
-					try {
-						return MAPPER.readValue(s, mappingClass);
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-				});
+				.map(HttpResponse::body);
 	}
 
 	public static <T> String formatUrl(String url, Map<String, String> parameters) {

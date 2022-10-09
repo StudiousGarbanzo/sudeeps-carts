@@ -2,13 +2,16 @@ package io.github.studiousgarbanzo.sudeepscarts;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import io.github.studiousgarbanzo.sudeepscarts.network.HttpSender;
 import io.github.studiousgarbanzo.sudeepscarts.network.Route;
 import io.github.studiousgarbanzo.sudeepscarts.object.ImmutableTrainRequest;
+import io.github.studiousgarbanzo.sudeepscarts.object.StationSearchResult;
 import io.github.studiousgarbanzo.sudeepscarts.object.TrainRequest;
 import io.github.studiousgarbanzo.sudeepscarts.object.TrainsStatus;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public class TrainApi {
@@ -21,5 +24,17 @@ public class TrainApi {
 				.build();
 
 		return HttpSender.performJsonRequest(Route.TRAINS, request, null, TrainsStatus.class);
+	}
+
+	public static Flux<StationSearchResult> searchStations(String query) {
+		return HttpSender.performJsonRequestJson(Route.TRAIN_SEARCH, null, Map.of("query", query))
+				.flatMapIterable(node -> node.get("data").get("r"))
+				.map(node -> {
+					try {
+						return HttpSender.MAPPER.treeToValue(node, StationSearchResult.class);
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				});
 	}
 }
