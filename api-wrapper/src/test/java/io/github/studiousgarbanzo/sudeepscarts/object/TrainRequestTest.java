@@ -1,12 +1,9 @@
 package io.github.studiousgarbanzo.sudeepscarts.object;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.concurrent.ExecutionException;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -18,7 +15,7 @@ class TrainRequestTest {
 	public void apiTest() throws IOException, ExecutionException, InterruptedException {
 		// We ignore some volatile mmt properties
 //		ObjectMapper mapper = new ObjectMapper().registerModule(new Jdk8Module()).configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
-//		ObjectWriter printer = new ObjectMapper().registerModule(new Jdk8Module()).writerWithDefaultPrettyPrinter(); // DEBUG
+		ObjectWriter printer = new ObjectMapper().registerModule(new Jdk8Module()).writerWithDefaultPrettyPrinter(); // DEBUG
 //
 //		TrainRequest trainRequest = ImmutableTrainRequest.builder()
 //				.date("20221029")
@@ -35,7 +32,7 @@ class TrainRequestTest {
 //		conn.connect();
 //		printer.writeValueAsString(mapper.readValue(conn.getInputStream(), TrainsStatus.class));
 
- 		TrainsStatus status = new TrainApi().getTrains("NZM", "SBC", LocalDate.now()).get();
-		System.out.println(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(status));
+ 		TrainsStatus status = TrainApi.getTrains("KLBG", "SBC", LocalDate.now()).block();
+		System.out.println(printer.writeValueAsString(status));
 	}
 }

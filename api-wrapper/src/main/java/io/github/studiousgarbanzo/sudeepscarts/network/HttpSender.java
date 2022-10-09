@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import reactor.core.publisher.Mono;
 
 public class HttpSender {
 	private static final HttpClient CLIENT = HttpClient
@@ -20,7 +21,7 @@ public class HttpSender {
 			.build();
 	public static final ObjectMapper MAPPER = new ObjectMapper().registerModule(new Jdk8Module()).configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
 
-	public static <T> CompletableFuture<T> performJsonRequest(Route route, Object payloadObj, Map<String, String> parameters, Class<T> mappingClass) {
+	public static <T> Mono<T> performJsonRequest(Route route, Object payloadObj, Map<String, String> parameters, Class<T> mappingClass) {
 		String payload;
 
 		if (payloadObj instanceof String) {
@@ -39,7 +40,7 @@ public class HttpSender {
 				.newBuilder()
 				.uri(URI.create(formatUrl(route.url(), parameters)))
 				.header("Content-Type", "application/json")
-				.header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0 SeaMonkey/2.40");
+				.header("User-Agent", "curl/7.54");
 
 		switch (route.method()) {
 			case GET -> requestBuilder.GET();
@@ -47,9 +48,9 @@ public class HttpSender {
 			case DELETE -> requestBuilder.DELETE();
 		}
 
-		return CLIENT.sendAsync(requestBuilder.build(), HttpResponse.BodyHandlers.ofString())
-				.thenApply(HttpResponse::body)
-				.thenApply(s -> {
+		return Mono.fromFuture(CLIENT.sendAsync(requestBuilder.build(), HttpResponse.BodyHandlers.ofString()))
+				.map(HttpResponse::body)
+				.map(s -> {
 					try {
 						return MAPPER.readValue(s, mappingClass);
 					} catch (Exception e) {

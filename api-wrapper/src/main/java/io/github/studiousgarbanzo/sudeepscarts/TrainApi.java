@@ -9,9 +9,10 @@ import io.github.studiousgarbanzo.sudeepscarts.network.Route;
 import io.github.studiousgarbanzo.sudeepscarts.object.ImmutableTrainRequest;
 import io.github.studiousgarbanzo.sudeepscarts.object.TrainRequest;
 import io.github.studiousgarbanzo.sudeepscarts.object.TrainsStatus;
+import reactor.core.publisher.Mono;
 
 public class TrainApi {
-	public static CompletableFuture<TrainsStatus> getTrains(String origin, String destination, LocalDate date) {
+	public static Mono<TrainsStatus> getTrains(String origin, String destination, LocalDate date) {
 		TrainRequest request = ImmutableTrainRequest
 				.builder()
 				.srcStn(origin)
