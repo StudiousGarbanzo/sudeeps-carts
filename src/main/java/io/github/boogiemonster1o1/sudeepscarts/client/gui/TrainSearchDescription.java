@@ -24,6 +24,8 @@ public class TrainSearchDescription extends LightweightGuiDescription {
 			.appendValue(ChronoField.YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
 			.toFormatter();
 	private boolean validDate = true;
+	private boolean validSource = true; // TODO
+	private boolean validDest = true; // TODO
 
 	public TrainSearchDescription() {
 		super();
@@ -67,11 +69,11 @@ public class TrainSearchDescription extends LightweightGuiDescription {
 			@Override
 			public void tick() {
 				super.tick();
-				this.setEnabled(validDate);
+				this.setEnabled(validDate && validSource && validDest);
 			}
 		};
 		rootPanel.add(checkButton, 0, 20, 14, 1);
-
+		checkButton.setOnClick(ScreenUtils::openLoadingScreen);
 		rootPanel.setInsets(new Insets(15));
 
 		rootPanel.validate(this);

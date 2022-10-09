@@ -4,5 +4,6 @@
   "sudeepscarts.gui.source": "Source",
   "sudeepscarts.gui.destination": "Destination",
   "sudeepscarts.gui.date": "Date",
-  "sudeepscarts.gui.check": "Check Availability"
+  "sudeepscarts.gui.check": "Check Availability",
+  "sudeepscarts.gui.loading": "Loading..."
 }
