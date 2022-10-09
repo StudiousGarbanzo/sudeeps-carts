@@ -3,7 +3,6 @@ package io.github.studiousgarbanzo.sudeepscarts;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 import io.github.studiousgarbanzo.sudeepscarts.network.HttpSender;
 import io.github.studiousgarbanzo.sudeepscarts.network.Route;
@@ -27,7 +26,8 @@ public class TrainApi {
 	}
 
 	public static Flux<StationSearchResult> searchStations(String query) {
-		return HttpSender.performJsonRequestJson(Route.TRAIN_SEARCH, null, Map.of("query", query))
+		return HttpSender.performJsonRequest(Route.TRAIN_SEARCH, null, Map.of("query", query))
+				.map(HttpSender::toJsonNode)
 				.flatMapIterable(node -> node.get("data").get("r"))
 				.map(node -> {
 					try {
