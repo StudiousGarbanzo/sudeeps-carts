@@ -1,3 +1,8 @@
 {
-  "sudeepscarts.menu.button": "Train Tickets"
+  "sudeepscarts.menu.button": "Train Tickets",
+  "sudeepscarts.gui.title": "Sudeep's Carts",
+  "sudeepscarts.gui.source": "Source",
+  "sudeepscarts.gui.destination": "Destination",
+  "sudeepscarts.gui.date": "Date",
+  "sudeepscarts.gui.check": "Check Availability"
 }

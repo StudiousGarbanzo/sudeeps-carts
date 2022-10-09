@@ -1,34 +1,78 @@
 package io.github.boogiemonster1o1.sudeepscarts.client.gui;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.SignStyle;
+import java.time.temporal.ChronoField;
+
+import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
+import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WTextField;
+import io.github.cottonmc.cotton.gui.widget.data.Insets;
 
 import net.minecraft.text.Text;
 
-public class TrainSearchDescription extends FullscreenGuiDescription {
+public class TrainSearchDescription extends LightweightGuiDescription {
+	public static final DateTimeFormatter CHAD_DATE = new DateTimeFormatterBuilder()
+			.appendValue(ChronoField.DAY_OF_MONTH, 2)
+			.appendLiteral('/')
+			.appendValue(ChronoField.MONTH_OF_YEAR, 2)
+			.appendLiteral('/')
+			.appendValue(ChronoField.YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+			.toFormatter();
+	private boolean validDate = true;
+
 	public TrainSearchDescription() {
-		this.setFullscreen(true);
-		WGridPanel rootPanel = new WGridPanel();
+		super();
+		this.setFullscreen(false);
+		WGridPanel rootPanel = new WGridPanel(10);
 		this.setRootPanel(rootPanel);
 
 		WLabel sourceLabel = new WLabel(Text.translatable("sudeepscarts.gui.source"));
-		rootPanel.add(sourceLabel, 0, 3);
+		rootPanel.add(sourceLabel, 0, 4);
 
 		WTextField sourceField = new WTextField();
-		rootPanel.add(sourceField, 1, 4, 5, 1);
+		rootPanel.add(sourceField, 0, 5, 14, 1);
 
 		WLabel destinationLabel = new WLabel(Text.translatable("sudeepscarts.gui.destination"));
-		rootPanel.add(destinationLabel, 0, 7);
+		rootPanel.add(destinationLabel, 0, 9);
 
 		WTextField destinationField = new WTextField();
-		rootPanel.add(destinationField, 1, 8, 5, 1);
+		rootPanel.add(destinationField, 0, 10, 14, 1);
 
 		WLabel dateLabel = new WLabel(Text.translatable("sudeepscarts.gui.date"));
-		rootPanel.add(dateLabel, 0, 11);
+		rootPanel.add(dateLabel, 0, 14);
 
 		WTextField dateField = new WTextField();
-		rootPanel.add(dateField, 1, 12, 5, 1);
+		rootPanel.add(dateField, 0, 15, 14, 1);
+		dateField.setChangedListener(str -> {
+			try {
+				LocalDate date = LocalDate.from(CHAD_DATE.parse(str));
+				if (date.isBefore(LocalDate.now())) {
+					throw new RuntimeException();
+				}
+				dateField.setEnabledColor(0x07B307);
+				validDate = true;
+			} catch (Exception e) {
+				dateField.setEnabledColor(0xFF0000);
+				validDate = false;
+			}
+		});
+		dateField.setText(LocalDate.now().format(CHAD_DATE));
+
+		WButton checkButton = new WButton(Text.translatable("sudeepscarts.gui.check")) {
+			@Override
+			public void tick() {
+				super.tick();
+				this.setEnabled(validDate);
+			}
+		};
+		rootPanel.add(checkButton, 0, 20, 14, 1);
+
+		rootPanel.setInsets(new Insets(15));
 
 		rootPanel.validate(this);
 	}
