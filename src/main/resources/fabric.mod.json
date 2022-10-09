@@ -1,29 +1,31 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "sudeepscarts",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Sudeep's Carts",
+  "description": "What ra sudeep",
   "authors": [
-    "Me!"
+    "heftymouse",
+    "BoogieMonster1O1"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://github.com/StudiousGarbanzo/sudeeps-carts",
+    "sources": "https://github.com/StudiousGarbanzo/sudeeps-carts",
+    "issues": "https://github.com/StudiousGarbanzo/sudeeps-carts/issues"
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/sudeepscarts/icon.png",
 
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
-    "main": [
-      "net.fabricmc.example.ExampleMod"
+    "client": [
+      "io.github.boogiemonster1o1.sudeepscarts.client.SudeepsCarts"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "sudeep.mixins.json"
   ],
 
   "depends": {
@@ -31,8 +33,5 @@
     "fabric-api": "*",
     "minecraft": "~1.19",
     "java": ">=17"
-  },
-  "suggests": {
-    "another-mod": "*"
   }
 }
