@@ -1,5 +1,6 @@
 package io.github.boogiemonster1o1.sudeepscarts.client;
 
+import io.github.cottonmc.cotton.gui.impl.client.LibGuiClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +11,6 @@ public class SudeepsCarts implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		LOGGER.info("Hello Fabric world!");
+
 	}
 }
