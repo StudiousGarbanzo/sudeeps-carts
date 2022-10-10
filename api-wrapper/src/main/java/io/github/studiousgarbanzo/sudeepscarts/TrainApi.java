@@ -26,7 +26,7 @@ public class TrainApi {
 	}
 
 	public static Flux<StationSearchResult> searchStations(String query) {
-		return HttpSender.performJsonRequest(Route.TRAIN_SEARCH, null, Map.of("query", query))
+		return HttpSender.performJsonRequest(Route.TRAIN_SEARCH, null, Map.of("search_query", query))
 				.map(HttpSender::toJsonNode)
 				.flatMapIterable(node -> node.get("data").get("r"))
 				.map(node -> {

@@ -76,12 +76,12 @@ public class HttpSender {
 				.map(HttpResponse::body);
 	}
 
-	public static <T> URI formatUri(@NotNull URI uri, @Nullable Map<String, String> parameters) {
+	public static URI formatUri(@NotNull URI uri, @Nullable Map<String, String> parameters) {
 		if (parameters == null) {
 			return uri;
 		}
 
-		StringBuilder sb = new StringBuilder("?");
+		StringBuilder sb = new StringBuilder();
 		for (Iterator<Map.Entry<String, String>> it = parameters.entrySet().iterator(); it.hasNext(); ) {
 			Map.Entry<String, String> entry = it.next();
 
@@ -94,7 +94,7 @@ public class HttpSender {
 		}
 
 		try {
-			return new URI(uri.getScheme(), uri.getAuthority(), uri.getHost(), uri.getPath() + sb, null);
+			return new URI(uri.getScheme(), uri.getAuthority(), uri.getPath(), sb.toString(), null);
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
