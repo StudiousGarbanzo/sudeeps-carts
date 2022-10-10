@@ -7,15 +7,14 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.jetbrains:annotations:20.1.0'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
     api 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
     api 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.13.4'
-    api platform('io.projectreactor:reactor-bom:2020.0.23')
-    api 'io.projectreactor:reactor-core'
-    api 'io.projectreactor.netty:reactor-netty-core'
-    api 'io.projectreactor.netty:reactor-netty-http'
     compileOnly 'org.immutables:value:2.9.2'
     compileOnly 'org.immutables:builder:2.9.2'
+    implementation platform('io.projectreactor:reactor-bom:2020.0.23')
+    implementation 'io.projectreactor:reactor-core'
     annotationProcessor "org.immutables:value:2.9.2"
 }
 
