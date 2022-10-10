@@ -1,18 +1,21 @@
 package io.github.studiousgarbanzo.sudeepscarts.network;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Mono;
 
 public class HttpSender {
@@ -23,14 +26,12 @@ public class HttpSender {
 			.build();
 	public static final ObjectMapper MAPPER = new ObjectMapper().registerModule(new Jdk8Module()).configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
 
-	public static Mono<JsonNode> performJsonRequestJson(Route route, Object payloadObj, Map<String, String> parameters) {
-		return performJsonRequest(route, payloadObj, parameters).map(body -> {
-			try {
-				return MAPPER.readTree(body);
-			} catch (JsonProcessingException e) {
-				throw new RuntimeException(e);
-			}
-		});
+	public static JsonNode toJsonNode(String body) {
+		try {
+			return MAPPER.readTree(body);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public static <T> Mono<T> performJsonRequest(Route route, Object payloadObj, Map<String, String> parameters, Class<T> mappingClass) {
@@ -44,7 +45,7 @@ public class HttpSender {
 				});
 	}
 
-	public static Mono<String> performJsonRequest(Route route, Object payloadObj, Map<String, String> parameters) {
+	public static Mono<String> performJsonRequest(@NotNull Route route, @Nullable Object payloadObj, @Nullable Map<String, String> parameters) {
 		String payload;
 
 		if (payloadObj instanceof String) {
@@ -61,7 +62,7 @@ public class HttpSender {
 
 		HttpRequest.Builder requestBuilder = HttpRequest
 				.newBuilder()
-				.uri(URI.create(formatUrl(route.url(), parameters)))
+				.uri(formatUri(route.uri(), parameters))
 				.header("Content-Type", "application/json")
 				.header("User-Agent", "curl/7.54");
 
@@ -75,13 +76,27 @@ public class HttpSender {
 				.map(HttpResponse::body);
 	}
 
-	public static <T> String formatUrl(String url, Map<String, String> parameters) {
+	public static URI formatUri(@NotNull URI uri, @Nullable Map<String, String> parameters) {
 		if (parameters == null) {
-			return url;
+			return uri;
 		}
-		for (Map.Entry<String, String> entry : parameters.entrySet()) {
-			url = url.replace("{" + entry.getKey() + "}", entry.getValue());
+
+		StringBuilder sb = new StringBuilder();
+		for (Iterator<Map.Entry<String, String>> it = parameters.entrySet().iterator(); it.hasNext(); ) {
+			Map.Entry<String, String> entry = it.next();
+
+			sb.append(entry.getKey());
+			sb.append("=");
+			sb.append(entry.getValue());
+			if(it.hasNext()) {
+				sb.append("&");
+			}
 		}
-		return url;
+
+		try {
+			return new URI(uri.getScheme(), uri.getAuthority(), uri.getPath(), sb.toString(), null);
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

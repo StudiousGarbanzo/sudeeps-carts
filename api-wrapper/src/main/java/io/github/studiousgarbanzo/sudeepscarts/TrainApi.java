@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.SignStyle;
 import java.time.temporal.ChronoField;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 import io.github.studiousgarbanzo.sudeepscarts.network.HttpSender;
 import io.github.studiousgarbanzo.sudeepscarts.network.Route;
@@ -42,7 +41,8 @@ public class TrainApi {
 	}
 
 	public static Flux<StationSearchResult> searchStations(String query) {
-		return HttpSender.performJsonRequestJson(Route.TRAIN_SEARCH, null, Map.of("query", query))
+		return HttpSender.performJsonRequest(Route.TRAIN_SEARCH, null, Map.of("search_query", query, "limit", "10", "version", "v1"))
+				.map(HttpSender::toJsonNode)
 				.flatMapIterable(node -> node.get("data").get("r"))
 				.map(node -> {
 					try {
@@ -65,6 +65,6 @@ public class TrainApi {
 				)
 				.build();
 
-		return HttpSender.performJsonRequest(Route.LIVE_TRAIN_STATUS, req, null, LiveTrainStatus.class);
+		return HttpSender.performJsonRequest(Route.LIVE_TRAIN_STATUS, req, Map.of("region", "in", "language", "eng", "currency", "inr"), LiveTrainStatus.class);
 	}
 }
