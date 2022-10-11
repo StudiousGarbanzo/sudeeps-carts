@@ -32,9 +32,7 @@ public class LoadingScreen extends CottonClientScreen {
 				})
 				.subscribe(status -> {
 					MinecraftClient client = MinecraftClient.getInstance();
-					client.execute(() -> {
-
-					});
+					client.execute(() -> ScreenUtils.openResultsScreen(status));
 				});
 	}
 

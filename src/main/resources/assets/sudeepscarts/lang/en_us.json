@@ -8,5 +8,6 @@
   "sudeepscarts.gui.loading": "Loading...",
   "sudeepscarts.gui.trainsearch": "Train Availability",
   "sudeepscarts.gui.livestatus": "Live Train Status",
-  "sudeepscarts.gui.pnrstatus": "PNR Status"
+  "sudeepscarts.gui.pnrstatus": "PNR Status",
+  "gui.sudeepscarts.train_results.title": "Trains"
 }
