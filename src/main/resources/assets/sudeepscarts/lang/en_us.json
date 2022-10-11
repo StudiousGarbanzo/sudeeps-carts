@@ -5,5 +5,8 @@
   "sudeepscarts.gui.destination": "Destination",
   "sudeepscarts.gui.date": "Date",
   "sudeepscarts.gui.check": "Check Availability",
-  "sudeepscarts.gui.loading": "Loading..."
+  "sudeepscarts.gui.loading": "Loading...",
+  "sudeepscarts.gui.trainsearch": "Train Availability",
+  "sudeepscarts.gui.livestatus": "Live Train Status",
+  "sudeepscarts.gui.pnrstatus": "PNR Status"
 }

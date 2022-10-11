@@ -26,6 +26,8 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modImplementation include("io.github.cottonmc:LibGui:${project.libgui_version}")
 	implementation project(":api-wrapper")
+	implementation platform('io.projectreactor:reactor-bom:2020.0.23')
+	implementation 'io.projectreactor:reactor-core'
 }
 
 processResources {

@@ -1,5 +1,7 @@
 package io.github.boogiemonster1o1.sudeepscarts.client.gui;
 
+import java.time.LocalDate;
+
 import net.minecraft.client.MinecraftClient;
 
 public final class ScreenUtils {
@@ -9,7 +11,7 @@ public final class ScreenUtils {
 		MinecraftClient.getInstance().setScreen(new SudeepsCartsClientScreen(new TrainSearchDescription()));
 	}
 
-	public static void openLoadingScreen() {
-		MinecraftClient.getInstance().setScreen(new LoadingScreen());
+	public static void openLoadingScreen(String src, String dest, LocalDate date) {
+		MinecraftClient.getInstance().setScreen(new LoadingScreen(src, dest, date));
 	}
 }

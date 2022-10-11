@@ -1,17 +1,41 @@
 package io.github.boogiemonster1o1.sudeepscarts.client.gui;
 
+import java.time.LocalDate;
+
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
+import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
+import io.github.studiousgarbanzo.sudeepscarts.TrainApi;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.toast.SystemToast;
+import net.minecraft.client.toast.Toast;
+import net.minecraft.client.toast.ToastManager;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 public class LoadingScreen extends CottonClientScreen {
-	LoadingScreen() {
+	LoadingScreen(String src, String dest, LocalDate date) {
 		super(new Description());
 		ScreenUtils.currentLoadingScreen = this;
+		TrainApi.getTrains(src, dest, date)
+				.doOnError(t -> {
+					MinecraftClient client = MinecraftClient.getInstance();
+					client.execute(() -> {
+						if (client.currentScreen instanceof LoadingScreen) {
+							ScreenUtils.openSearchScreen();
+						}
+						client.getToastManager().add(new SystemToast(SystemToast.Type.UNSECURE_SERVER_WARNING, Text.translatable("Error searching Trains"), null)); // TODO
+					});
+				})
+				.subscribe(status -> {
+					MinecraftClient client = MinecraftClient.getInstance();
+					client.execute(() -> {
+
+					});
+				});
 	}
 
 	@Override
@@ -29,7 +53,7 @@ public class LoadingScreen extends CottonClientScreen {
 		ScreenUtils.currentLoadingScreen = null;
 	}
 
-	private static class Description extends FullscreenGuiDescription {
+	private static class Description extends LightweightGuiDescription {
 		Description() {
 			super();
 			WPlainPanel rootPanel = new WPlainPanel();

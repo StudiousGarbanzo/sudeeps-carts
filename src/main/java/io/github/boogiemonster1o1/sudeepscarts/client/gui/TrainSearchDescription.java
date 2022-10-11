@@ -73,7 +73,7 @@ public class TrainSearchDescription extends LightweightGuiDescription {
 			}
 		};
 		rootPanel.add(checkButton, 0, 20, 14, 1);
-		checkButton.setOnClick(ScreenUtils::openLoadingScreen);
+		checkButton.setOnClick(() -> ScreenUtils.openLoadingScreen(sourceField.getText(), destinationField.getText(), LocalDate.from(CHAD_DATE.parse(dateField.getText()))));
 		rootPanel.setInsets(new Insets(15));
 
 		rootPanel.validate(this);
